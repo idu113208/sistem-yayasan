@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - LMS Yayasan Bintrebusih</title>
+    <!-- TailwindCSS & Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <script>
+        // Cek login
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="bg-blue-800 text-white fixed md:relative w-64 h-full flex flex-col justify-between transition-all duration-300 z-20"
+            id="sidebar">
+            <div>
+                <div class="p-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl"></i>
+                        <span class="ml-2 text-xl font-bold logo-text">Bintrebusih LMS</span>
+                    </div>
+                    <button id="toggleSidebar" class="md:hidden focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <nav class="mt-6 px-4 space-y-2" id="nav-items">
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded active-nav"
+                        id="nav-dashboard">
+                        <i class="fas fa-home"></i>
+                        <span class="ml-3 nav-text">Dashboard</span>
+                    </a>
+                    <div class="text-xs text-blue-200 uppercase mb-2 mt-4">Main Menu</div>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-mahasiswa">
+                        <i class="fas fa-user-graduate"></i>
+                        <span class="ml-3 nav-text">Mahasiswa</span>
+                    </a>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-pelajar">
+                        <i class="fas fa-user"></i>
+                        <span class="ml-3 nav-text">Pelajar</span>
+                    </a>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-kelas">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span class="ml-3 nav-text">Kelas & Program</span>
+                    </a>
+                    <div class="text-xs text-blue-200 uppercase mb-2 mt-4">Administration</div>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-karyawan">
+                        <i class="fas fa-users"></i>
+                        <span class="ml-3 nav-text">Staf & Karyawan</span>
+                    </a>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-presensi">
+                        <i class="fas fa-calendar-check"></i>
+                        <span class="ml-3 nav-text">Presensi Pegawai</span>
+                    </a>
+                    <a href="#" class="flex items-center px-2 py-2 hover:bg-blue-700 rounded" id="nav-kerjasama">
+                        <i class="fas fa-handshake"></i>
+                        <span class="ml-3 nav-text">Kerja Sama Lembaga</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="p-4">
+                <button id="toggleSidebarMobile" class="md:hidden w-full flex items-center">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="ml-2">Collapse</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col ml-64 transition-all duration-300" id="mainContent">
+            <!-- Header -->
+            <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-10">
+                <div class="flex items-center space-x-4">
+                    <button id="toggleSidebarMobileBtn" class="md:hidden focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="text-xl font-semibold text-gray-800" id="page-title">Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..."
+                            class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                        <i class="fas fa-search absolute left-3 top-2 text-gray-400"></i>
+                    </div>
+                    <button class="relative text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                    </button>
+                    <div class="relative dropdown">
+                        <button class="flex items-center space-x-2 focus:outline-none" id="profileBtn">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-8 h-8 rounded-full" />
+                            <span class="hidden md:inline-block font-medium">Admin</span>
+                            <i class="fas fa-chevron-down hidden md:inline-block"></i>
+                        </button>
+                        <div class="dropdown-content hidden absolute right-0 mt-2 p-2 bg-white rounded shadow-lg w-48 z-10"
+                            id="profileDropdown">
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100"><i
+                                    class="fas fa-user mr-2"></i>Profile</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100"><i
+                                    class="fas fa-cog mr-2"></i>Settings</a>
+                            <div class="border-t my-2"></div>
+                            <a href="#" id="logoutBtn" class="block px-4 py-2 hover:bg-gray-100"><i
+                                    class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="p-6 space-y-6" id="content-area">
+                <!-- Data akan diisi lewat script loadDashboard() -->
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Cek login
+        if (sessionStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('loggedIn');
+            window.location.href = 'login.html';
+        });
+
+        // Toggle sidebar
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('w-20');
+            document.getElementById('mainContent').classList.toggle('ml-20');
+        });
+        document.getElementById('toggleSidebarMobile').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('w-20');
+            document.getElementById('mainContent').classList.toggle('ml-20');
+        });
+        document.getElementById('toggleSidebarMobileBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('w-20');
+            document.getElementById('mainContent').classList.toggle('ml-20');
+        });
+
+        // Toggle dropdown profile
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            document.getElementById('profileDropdown').classList.toggle('hidden');
+        });
+
+        // Load dashboard data
+        function loadDashboard() {
+            fetch('api/fetch_dashboard_stats.php')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('content-area').innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <div class="bg-white p-4 rounded shadow">
+              <div class="flex items-center space-x-2">
+                <div class="p-3 bg-blue-100 rounded-full text-blue-600"><i class="fas fa-user-graduate"></i></div>
+                <div>
+                  <p class="text-gray-500 text-sm">Mahasiswa</p>
+                  <h3 class="text-2xl font-bold" id="totalMahasiswa">${data.mahasiswa.total}</h3>
+                  <p class="text-green-500 text-sm" id="trendMahasiswa">${data.mahasiswa.trend}% dari bulan lalu</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-4 rounded shadow">
+              <div class="flex items-center space-x-2">
+                <div class="p-3 bg-green-100 rounded-full text-green-600"><i class="fas fa-user"></i></div>
+                <div>
+                  <p class="text-gray-500 text-sm">Pelajar</p>
+                  <h3 class="text-2xl font-bold" id="totalPelajar">${data.pelajar.total}</h3>
+                  <p class="text-green-500 text-sm" id="trendPelajar">${data.pelajar.trend}% dari bulan lalu</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-4 rounded shadow">
+              <div class="flex items-center space-x-2">
+                <div class="p-3 bg-purple-100 rounded-full text-purple-600"><i class="fas fa-users"></i></div>
+                <div>
+                  <p class="text-gray-500 text-sm">Staf & Karyawan</p>
+                  <h3 class="text-2xl font-bold" id="totalKaryawan">${data.karyawan.total}</h3>
+                  <p class="text-red-500 text-sm" id="trendKaryawan">${data.karyawan.trend}% dari bulan lalu</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-4 rounded shadow">
+              <div class="flex items-center space-x-2">
+                <div class="p-3 bg-yellow-100 rounded-full text-yellow-600"><i class="fas fa-handshake"></i></div>
+                <div>
+                  <p class="text-gray-500 text-sm">Kerja Sama</p>
+                  <h3 class="text-2xl font-bold" id="totalKerjaSama">${data.kerja_sama.total}</h3>
+                  <p class="text-green-500 text-sm" id="trendKerjaSama">${data.kerja_sama.new} baru bulan ini</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Aktivitas Terkini -->
+          <div class="bg-white p-4 rounded shadow">
+            <div class="flex justify-between mb-4">
+              <h2 class="text-lg font-semibold">Aktivitas Terkini</h2>
+              <a href="aktivitas.html" class="text-blue-600 hover:underline text-sm">Lihat Semua</a>
+            </div>
+            <div id="aktivitasList">
+              <!-- Data aktivitas bisa diisi JavaScript -->
+              <p class="text-gray-500">Tidak ada aktivitas terbaru.</p>
+            </div>
+          </div>
+          <!-- Data Mahasiswa Terbaru -->
+          <div class="bg-white p-4 rounded shadow mt-4">
+            <h2 class="text-lg font-semibold mb-2">Data Mahasiswa Terbaru</h2>
+            <table class="min-w-full table-auto divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NIM</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Program Studi</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Angkatan</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="mahasiswaTableBody" class="divide-y divide-gray-200">
+                <!-- Data diisi via fetch -->
+              </tbody>
+            </table>
+          </div>
+        `;
+                    // Fetch mahasiswa dan isi tabel
+                    fetch('api/fetch_mahasiswa.php')
+                        .then(res => res.json())
+                        .then(data => {
+                            const tbody = document.getElementById('mahasiswaTableBody');
+                            tbody.innerHTML = '';
+                            data.forEach(m => {
+                                const statusClass = m.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                                tbody.innerHTML += `
+                <tr>
+                  <td class="px-4 py-2">${m.nim}</td>
+                  <td class="px-4 py-2">${m.nama}</td>
+                  <td class="px-4 py-2">${m.program_studi}</td>
+                  <td class="px-4 py-2">${m.angkatan}</td>
+                  <td class="px-4 py-2"><span class="${statusClass} px-2 rounded-full text-xs">${m.status}</span></td>
+                  <td class="px-4 py-2 text-right space-x-2">
+                    <a href="#" class="text-blue-600 hover:underline">Detail</a>
+                    <a href="#" class="text-red-600 hover:underline">Hapus</a>
+                  </td>
+                </tr>`;
+                            });
+                        });
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        // Load data saat halaman selesai loading
+        window.onload = loadDashboard;
+    </script>
+</body>
+
+</html>
